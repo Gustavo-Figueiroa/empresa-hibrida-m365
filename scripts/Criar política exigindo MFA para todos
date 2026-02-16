@@ -1,0 +1,21 @@
+Install-Module Microsoft.Graph -Scope CurrentUser
+Connect-MgGraph -Scopes "Policy.ReadWrite.ConditionalAccess","Directory.ReadWrite.All"
+
+$params = @{
+    displayName = "Exigir MFA para Todos"
+    state = "enabled"
+    conditions = @{
+        users = @{
+            includeUsers = @("All")
+        }
+        applications = @{
+            includeApplications = @("All")
+        }
+    }
+    grantControls = @{
+        operator = "OR"
+        builtInControls = @("mfa")
+    }
+}
+
+New-MgIdentityConditionalAccessPolicy -BodyParameter $params
